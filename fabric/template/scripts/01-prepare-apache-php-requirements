@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Scripts in this directory are run during the build process.
+# each script will be uploaded to /tmp on your build droplet, 
+# given execute permissions and run.  The cleanup process will
+# remove the scripts from your build system after they have run
+# if you use the build_image task.
+#
+wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -
+env LC_ALL="C.UTF-8" add-apt-repository "deb https://packages.sury.org/php/ buster main"
+apt-get update 
+apt-get install -y php7.4 php7.4-fpm php7.4-pspell php7.4-curl php7.4-gd php7.4-intl
+apt-get install -y php7.4-mysql php7.4-xml php7.4-xmlrpc php7.4-ldap php7.4-soap 
+apt-get install -y php7.4-mbstring php7.4-mbstring php7.4-zip php7.4-redis
+systemctl enable --now php7.4-fpm apache2
+a2dismod -f mpm_prefork php*
+a2enmod proxy_fcgi mpm_event
+a2enconf php7.4-fpm
+a2ensite moodle.conf
+systemctl restart apache2

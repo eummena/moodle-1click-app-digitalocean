@@ -1,0 +1,2 @@
+ufw software-properties-common dirmngr apt-transport-https ca-certificates graphviz aspell \
+git ghostscript clamav apache2 certbot
