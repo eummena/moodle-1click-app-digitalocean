@@ -22,8 +22,7 @@ On the server:
  * The randomized moodle mysql password is saved in /root/.moodle_mysql_password
  * The Moodle LMS web root is located at /var/www/moodle
  * The Moodle LMS admin password is saved in /root/.moodleadmin_password
- * Certbot is preinstalled. Run it to configure HTTPS. See
-   https://do.co/34TfYn8#enable-https for more detail.
+ * Certbot is preinstalled. Run it to configure HTTPS, after successfully registering a new domain name for the IP of the Droplet
 
 ********************************************************************************
 To delete this message of the day: rm -rf $(readlink -f ${0})
