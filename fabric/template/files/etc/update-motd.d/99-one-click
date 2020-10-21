@@ -6,7 +6,7 @@ myip=$(hostname -I | awk '{print$1}')
 cat <<EOF
 ********************************************************************************
 
-Welcome to DigitalOcean's One-Click Moodle LMS Droplet.
+Welcome to the One-Click Moodle LMS Droplet.
 To keep this Droplet secure, the UFW firewall is enabled.
 All ports are BLOCKED except 22 (SSH), 80 (HTTP), and 443 (HTTPS).
 
@@ -15,7 +15,7 @@ On your local linux machine put the following line inside the /etc/hosts file:
 "$myip moodle.lms.example"
 
 In a web browser, you can view:
- * The Moodle LMS website: http://moodle.lms.example
+ * The Moodle LMS website by visiting the following URL: http://moodle.lms.example
 
 On the server:
  * The randomized mysql root password is saved in /root/.root_mysql_password

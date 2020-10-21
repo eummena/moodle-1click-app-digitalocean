@@ -6,7 +6,7 @@ add-apt-repository 'deb [arch=amd64] https://ftp.agdsn.de/pub/mirrors/mariadb/re
 apt update && apt-get install -y mariadb-server-10.5 mariadb-client-10.5
 systemctl enable --now mariadb
 
-#Generate Mysql root password.
+#Generate Mysql root & moodle passwords.
 root_mysql_pass=$(openssl rand -hex 24)
 moodle_mysql_pass=$(openssl rand -hex 24)
 

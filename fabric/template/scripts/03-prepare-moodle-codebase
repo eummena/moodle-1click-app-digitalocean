@@ -6,7 +6,6 @@ WWW_HOME="/var/www/moodle"
 MOODLEDATA="/var/www/moodledata"
 mkdir $WWW_HOME $MOODLEDATA
 chown -R www-data:www-data $MOODLEDATA
-mkdir /var/log/moodle_cron && chown www-data:www-data /var/log/moodle_cron
 wget https://github.com/moodle/moodle/archive/v3.9.2.tar.gz && tar xzvf v3.9.2.tar.gz
 cd moodle-3.9.2/
 rsync --chown www-data:www-data -avz --delete --exclude ".git/" --filter=":- .gitignore" . $WWW_HOME
@@ -32,5 +31,7 @@ then
 fi
 
 # Configure cronjob for moodle under "www-data" user
-
+mkdir /var/log/moodle_cron
+touch /var/log/moodle_cron/moodle_cron.log
+chown -R www-data:www-data /var/log/moodle_cron
 echo "* * * * * /usr/bin/php $WWW_HOME/admin/cli/cron.php >> /var/log/moodle_cron/moodle_cron.log 2>&1" >> /var/spool/cron/crontabs/www-data
