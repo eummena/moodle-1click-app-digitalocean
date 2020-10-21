@@ -1,11 +1,6 @@
 #!/bin/bash
-#
-# Scripts in this directory are run during the build process.
-# each script will be uploaded to /tmp on your build droplet, 
-# given execute permissions and run.  The cleanup process will
-# remove the scripts from your build system after they have run
-# if you use the build_image task.
-#
+
+# Download Moodle version 3.9.2 and unpack it over /var/www/moodle
 cd /var/www
 WWW_HOME="/var/www/moodle"
 MOODLEDATA="/var/www/moodledata"
@@ -18,14 +13,24 @@ rsync --chown www-data:www-data -avz --delete --exclude ".git/" --filter=":- .gi
 chown -R www-data:www-data $WWW_HOME
 rm -rf /var/www/moodle-3.9.2*/ /var/www/v3.9.2.tar.gz*
 cd $WWW_HOME
-DB_NAME="moodle"
-DB_USER="moodle_user"
-DB_PASS="AmO0ledO1239"
+
+# Define moodle admin credentials
+
 ADMIN_USER="root"
 ADMIN_PASS="Adm1n0plsA$"
 echo "$ADMIN_USER:$ADMIN_PASS" > /root/.moodleadmin_password
 echo "127.0.0.1 moodle.lms.example" >> /etc/hosts
-mysql -u root -e "CREATE DATABASE $DB_NAME"
-mysql -u root -e "GRANT ALL PRIVILEGES ON moodle.* TO 'moodle_user'@localhost IDENTIFIED BY 'AmO0ledO1239'"
-sudo -u www-data php admin/cli/install.php --lang=en --wwwroot=http://moodle.lms.example --dataroot=$MOODLEDATA --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --adminuser=$ADMIN_USER --adminpass=$ADMIN_PASS --fullname="Moodle Learning Management System" --shortname="Moodle" --dbtype=mariadb --non-interactive --allow-unstable --agree-license
+
+DB_NAME="moodle"
+DB_USER="moodle_user"
+DB_PASS="$(cat /root/.moodle_mysql_password|cut -d "=" -f 2|tr -d '\"')"
+
+# Install moodle only in case it isn't already installed
+if ! test -f $WWW_HOME/config.php
+then
+  sudo -u www-data php admin/cli/install.php --lang=en --wwwroot=http://moodle.lms.example --dataroot=$MOODLEDATA --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --adminuser=$ADMIN_USER --adminpass=$ADMIN_PASS --fullname="Moodle Learning Management System" --shortname="Moodle" --dbtype=mariadb --non-interactive --allow-unstable --agree-license
+fi
+
+# Configure cronjob for moodle under "www-data" user
+
 echo "* * * * * /usr/bin/php $WWW_HOME/admin/cli/cron.php >> /var/log/moodle_cron/moodle_cron.log 2>&1" >> /var/spool/cron/crontabs/www-data

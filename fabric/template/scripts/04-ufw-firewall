@@ -6,7 +6,10 @@
 # remove the scripts from your build system after they have run
 # if you use the build_image task.
 #
-ufw enable
-ufw allow in on eth0 to any port 443 proto tcp
-ufw allow in on eth0 to any port 80 proto tcp
-ufw allow in on eth0 to any port 22 proto tcp
+if ! ufw status | grep active
+then
+  ufw enable
+fi
+ufw allow 443/tcp
+ufw allow 80/tcp
+ufw allow 22/tcp

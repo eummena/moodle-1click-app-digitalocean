@@ -1,12 +1,29 @@
 #!/bin/bash
-#
-# Scripts in this directory are run during the build process.
-# each script will be uploaded to /tmp on your build droplet, 
-# given execute permissions and run.  The cleanup process will
-# remove the scripts from your build system after they have run
-# if you use the build_image task.
-#
+
+# Install latest mariadb server & client packages (v10.5)
 wget -qO - https://mariadb.org/mariadb_release_signing_key.asc | apt-key add -
 add-apt-repository 'deb [arch=amd64] https://ftp.agdsn.de/pub/mirrors/mariadb/repo/10.5/debian buster main'
 apt update && apt-get install -y mariadb-server-10.5 mariadb-client-10.5
 systemctl enable --now mariadb
+
+#Generate Mysql root password.
+root_mysql_pass=$(openssl rand -hex 24)
+moodle_mysql_pass=$(openssl rand -hex 24)
+
+# Save the passwords
+cat > /root/.root_mysql_password <<EOF
+root_mysql_pass="${root_mysql_pass}"
+EOF
+
+cat > /root/.moodle_mysql_password << EOF
+moodle_mysql_pass="${moodle_mysql_pass}"
+EOF
+
+mysqladmin -u root -h localhost password ${root_mysql_pass}
+DB_NAME="moodle"
+DB_USER="moodle_user"
+DB_PASS="${moodle_mysql_pass}"
+
+# Create moodle database & related mysql user
+mysql -u root -e "CREATE DATABASE ${DB_NAME}"
+mysql -u root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@localhost IDENTIFIED BY '${DB_PASS}'"

@@ -18,6 +18,8 @@ In a web browser, you can view:
  * The Moodle LMS website: http://moodle.lms.example
 
 On the server:
+ * The randomized mysql root password is saved in /root/.root_mysql_password
+ * The randomized moodle mysql password is saved in /root/.moodle_mysql_password
  * The Moodle LMS web root is located at /var/www/moodle
  * The Moodle LMS admin password is saved in /root/.moodleadmin_password
  * Certbot is preinstalled. Run it to configure HTTPS. See
