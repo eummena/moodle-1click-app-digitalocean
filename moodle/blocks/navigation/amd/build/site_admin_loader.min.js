@@ -1,0 +1,2 @@
+define ("block_navigation/site_admin_loader",["jquery","core/ajax","core/config","block_navigation/ajax_response_renderer"],function(a,b,c,d){var e=c.wwwroot+"/lib/ajax/getsiteadminbranch.php";return{load:function load(b){b=a(b);var f=a.Deferred(),g={type:71,sesskey:c.sesskey};a.ajax(e,{type:"POST",dataType:"json",data:g}).done(function(a){d.render(b,a);f.resolve()});return f}}});
+//# sourceMappingURL=site_admin_loader.min.js.map

@@ -1,0 +1,3 @@
+#java -jar schemaspy-6.1.0.jar -debug -meta=meta.xml -desc='Moodle 3.8 database schema with additional foreign key relationships see http://www.examulator.com/er' -template=./templates/
+#java -jar schemaspy-6.1.0.jar -meta=meta.xml -t mysql -host 127.0.0.1 -db template_lms -p moodle1 -dp /usr/share/java/mysql-connector-java-5.1.42.jar -o /var/www/dev1/sqlgenerator -u moodle1 -debug
+java -jar schemaspy-6.1.0.jar -meta=meta.xml -t mysql -host 127.0.0.1 -db schemaspy_template_lms -s schemaspy_template_lms -p moodle1 -u moodle1 -dp /usr/share/java/mysql-connector-java-5.1.42.jar -o ~/dev1/sqlgenerator/ -debug

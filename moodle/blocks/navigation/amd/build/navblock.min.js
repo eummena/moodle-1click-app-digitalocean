@@ -1,0 +1,2 @@
+define ("block_navigation/navblock",["jquery","core/tree"],function(a,b){return{init:function init(a){var c=new b(".block_navigation .block_tree");c.finishExpandingGroup=function(c){b.prototype.finishExpandingGroup.call(this,c);Y.use("moodle-core-event",function(){Y.Global.fire(M.core.globalEvents.BLOCK_CONTENT_UPDATED,{instanceid:a})})};c.collapseGroup=function(c){b.prototype.collapseGroup.call(this,c);Y.use("moodle-core-event",function(){Y.Global.fire(M.core.globalEvents.BLOCK_CONTENT_UPDATED,{instanceid:a})})}}}});
+//# sourceMappingURL=navblock.min.js.map

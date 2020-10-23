@@ -1,0 +1,16 @@
+.*
+/config.php
+*README.txt
+*README.md
+*readme.txt
+*UPGRADE.md
+*UPGRADE.txt
+*composer.lock
+*composer.json*
+*package.json*
+*composer.phar
+*CHANGELOG*
+*vendor*
+/local/adminer
+/config-dist.php
+/config_old.php

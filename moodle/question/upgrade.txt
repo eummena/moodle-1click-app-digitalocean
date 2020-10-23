@@ -1,0 +1,172 @@
+This files describes API changes for code that uses the question API.
+
+=== 3.9 ==
+
+1) For years, the ..._questions_in_use callback has been the right way for plugins to
+   tell the core question system if questions are required. Previously this callback
+   only worked in mods. Now it works in all plugins.
+
+   At the same time, if you are still relying on the legacy ..._question_list_instances
+   callback for this, you will now get a debugging warning telling you to upgrade.
+
+2) Previously, the functions question_delete_activity, question_delete_course and
+   question_delete_course_category would echo output. This was not correct behaviour for
+   a low-level API function. Now, they no longer output. Related to this, the helper
+   function they use, question_delete_context, now always returns an empty array.
+
+   This probably won't acutally cause you any problems. However, you may previously
+   have had to add expectOutputRegex calls to your unit tests to avoid warnings about
+   risky tests. If you have done that, those tests will now fail until you delete that expectation.
+
+
+=== 3.8 ===
+
+If you have customised the display of the question bank (using $CFG->questionbankcolumns)
+then be aware that the default configuration has changed, and you may wish to make
+equivalent changes in your customised version. The old column question_name_column
+has been replaced by question_name_idnumber_tags_column. The old question_name_column
+still exists, so it is safe to continue using it.
+
+There is a new question bank column edit_menu_column which displays all actions
+in a drop-down menu, instead of as separate icons. This is now used by default.
+Specifically, it gathers all other columns which implement the new interface
+menuable_action. If you have made a custom subclasses of action_column_base,
+you probably want to implement the new interface. If your column is a simple action,
+the easiest way to do this will be to subclass menu_action_column_base. If your action
+is more complex, and does not follow the simple pattern that menu_action_column_base
+uses, then you will need to implement menuable_action yourself. The commit for
+MDL-66816 updates all the core action columns. Looking at that change should make
+it clearly the changes you need to make to your columns.
+
+
+=== 3.7 ===
+
+The code for the is_valid_number function that was duplicated in the
+qtype_numerical and qtype_multianswer plugins in the qtype_numerical_edit_form
+and qtype_multianswer_edit_form classes has been moved to a static function
+in the qtype_numerical class of the qtype_numerical plugin.
+
+The exportprocess function of the qformat_default class doesn't output a blank line
+if the result of the writequestion function is null. This permit to qformat plugins
+to ignore some questions without the need to overwrite this function.
+
+* The question_preview_cron() has been deleted. Please use \core\task\question_cron_task::execute().
+* The question_usage_statistics_cron() has been deleted. Please use \core\task\question_cron_task::execute().
+* The method question_bank::cron() has been deleted, please use question related scheduled tasks.
+
+=== 3.5 ===
+
+1) The question format exportprocess function now adds a
+   $checkcapabilities boolean to allow questions to be exported in
+   certain circumstances.
+
+=== 3.2 ===
+
+1) The following renderers have been deprecated in favour of the renderable
+   core_question\output\qbank_chooser and associated render_* method.
+    * qbank_chooser
+    * qbank_chooser_types
+    * qbank_chooser_qtype
+    * qbank_chooser_title
+
+=== 3.1 ===
+
+1) The argument $requirecourseid was removed from question_edit_setup() and
+   is no longer respected. The behaviour was found to be buggy and now throws
+   debugging notices if passed.
+
+=== 2.9 ===
+
+1) Some functions in questionlib.php which were deprecated in the past have now
+   been deleted:
+
+   Deprecated since 2.1
+    * question_list_instances
+    * get_grade_options
+    * question_category_isused
+    * save_question_options
+    * question_get_real_state
+
+   Deprecated since 2.6
+    * question_rewrite_questiontext_preview_urls
+    * question_send_questiontext_file
+    * question_pluginfile no longer falls back to using the old
+      {$previewcomponent}_questiontext_preview_pluginfile callback if the new
+      {$previewcomponent}_question_preview_pluginfile callback is missing.
+
+
+=== 2.8 ===
+
+1) This is just a warning that some methods of the question_engine_data_mapper
+   class have changed. All these methods are ones that you should not have been
+   calling directly from your code, so this should not cause any problems.
+   The changed methods are:
+    * insert_question_attempt
+    * insert_step_data
+    * update_question_attempt_step
+
+
+=== 2.7 ===
+
+1)  Changes to class question_bank_view:
+
+    Filters, including $recurse and $showhidden, are now implemented as
+    pluggable \core_question\bank\search\condition classes.
+
+    Therefore $recurse and $showhidden are no longer passed to the following functions:
+        protected function display_options [deprecated, use display_options_form()]
+        protected function build_query_sql [deprecated, use build_query()]
+
+    protected function display_category_form() is deprecated. Use \core_question\bank\search\category_condition
+
+    protected function display_category_form_checkbox deprecated use html_writer::checkbox and separate JavaScript
+
+To add filters, local plugins can now implement the function local_[pluginname]_get_question_bank_search_conditions,
+
+2) To make columns available to question_bank_view, plugins can extend core_question\bank\column_base.
+   Users may choose to display additional columns by setting $CFG->questionbankcolumns to a comma-delimited list of columns.
+
+3) The subsort separator has changed from _ to - in order to distinuguish subsorts vs frankenstyle component separators.
+
+4) Because of the move to autoloading, $knowncolumntypes and known_field_types() are no longer used.
+
+5) question_bank_column_base and it's derived classes have been namespaced to core_question\bank\column_base.
+
+
+=== 2.6 ===
+
+1) Modules using the question bank MUST now declare their use of it with the xxx_supports()
+   flag FEATURE_USES_QUESTIONS. question_module_uses_questions() should be used to determine
+   if a module uses questions.
+
+2) It is sometimes necessary to display bits of question content without having
+   and attempt (question_usage) in progress. Two examples of this are the option
+   in the question bank to display the questiontext, and in the quiz statistics
+   report, where it displays the question text above the report.
+
+   Previously, this display was done using a special method that only worked for
+   the question text, but which would not work for other parts of the question.
+   That old mechanism has been deprecated, and there is a new method that you
+   should use.
+
+   To display the question, replace calls to question_rewrite_questiontext_preview_urls
+   with calls to question_rewrite_question_preview_urls. Because the new function
+   is more flexibile, you have to pass more arguments.
+
+   To perform the necessary permission checks when the file is downloaded, you need
+   to implement the callback [component name]_question_preview_pluginfile.
+   (Previously you implemented [component name]_questiontext_preview_pluginfile.)
+   quiz_statistics_question_preview_pluginfile is an example of what to do.
+
+   question_send_questiontext_file has been deprecated. It is no longer necessary.
+
+   To ensure you are no longer using or defining any deprecated functions,
+   search for the regular expression:
+   question_rewrite_questiontext_preview_urls|_questiontext_preview_pluginfile|question_send_questiontext_file
+
+3) The argument list for core_question_renderer::mark_summary has changed.
+   Please update your calls. (The most likely scenario for this is if you have
+   overridden core_question_renderer::info in your own renderer.) You need to
+   make a change like:
+   - $this->mark_summary($qa, $options);
+   + $this->mark_summary($qa, $behaviouroutput, $options);

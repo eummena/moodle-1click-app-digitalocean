@@ -1,0 +1,14 @@
+.idea/
+target/
+schemaspy.iml
+.project
+.classpath
+.settings
+/bin/
+schemaspy.properties
+bower_components/
+*.iml
+!ext-lib
+ext-lib/**/*.jar
+!/src/test/resources/target
+.java-version
