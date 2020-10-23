@@ -1,3 +1,5 @@
+Run the following commands on your laptop
+
 ```bash
 git clone https://git.eummena.org/eummena/dev/eummoodle/moodle-on-do-marketplace/
 cd moodle-on-do-marketplace/fabric/template
