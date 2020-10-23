@@ -1,0 +1,16 @@
+variables:
+  IP: '165.227.160.132'
+
+deploy_to_server:
+  stage: deploy
+  tags:
+    - eummena-shell-runner
+  script:
+    - echo "Running deployment scripts for Droplet image"
+    - cd moodle-on-do-marketplace/fabric/template
+    - fab testbuild -H $IP
+  only:
+    - master
+
+stages:
+  - deploy
