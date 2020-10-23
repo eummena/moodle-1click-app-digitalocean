@@ -19,6 +19,9 @@ cat > /root/.moodle_mysql_password << EOF
 moodle_mysql_pass="${moodle_mysql_pass}"
 EOF
 
+# Permissions fix
+chmod 600 /root/.root_mysql_password /root/.moodle_mysql_password
+
 mysqladmin -u root -h localhost password ${root_mysql_pass}
 DB_NAME="moodle"
 DB_USER="moodle_user"

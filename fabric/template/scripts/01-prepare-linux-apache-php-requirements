@@ -17,7 +17,7 @@ apt-get install -y php7.4-mysql php7.4-xml php7.4-xmlrpc php7.4-ldap php7.4-soap
 apt-get install -y php7.4-mbstring php7.4-mbstring php7.4-zip php7.4-redis
 systemctl enable --now php7.4-fpm apache2
 a2dismod -f mpm_prefork php*
-a2enmod proxy_fcgi mpm_event
+a2enmod proxy_fcgi mpm_event setenvif
 a2enconf php7.4-fpm
 a2ensite moodle.conf
 systemctl restart apache2

@@ -1,2 +1,2 @@
-ufw expect software-properties-common dirmngr apt-transport-https ca-certificates graphviz aspell \
-git ghostscript clamav apache2 certbot
+ufw rsync expect software-properties-common dirmngr apt-transport-https ca-certificates graphviz aspell \
+git ghostscript clamav apache2 certbot python-certbot-apache

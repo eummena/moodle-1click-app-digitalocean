@@ -19,6 +19,7 @@ ADMIN_USER="root"
 ADMIN_PASS="Adm1n0plsA$"
 echo "$ADMIN_USER:$ADMIN_PASS" > /root/.moodleadmin_password
 echo "127.0.0.1 moodle.lms.example" >> /etc/hosts
+chmod 600 /root/.moodleadmin_password
 
 DB_NAME="moodle"
 DB_USER="moodle_user"
