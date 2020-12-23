@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Configured as part of the DigitalOcean 1-Click Image build process
+
+myip=$(hostname -I | awk '{print$1}')
+
+cat <<EOF
+********************************************************************************
+
+Welcome to the One-Click Moodle LMS Droplet.
+To keep this Droplet secure, the UFW firewall is enabled.
+All ports are BLOCKED except 22 (SSH), 80 (HTTP), and 443 (HTTPS).
+
+Some necessary details for the moodle installation are the following:
+ * The Moodle Database is: "moodle"
+ * The Moodle Database user is the mysql "root" user
+ * The mysql root password is saved in /root/.root_mysql_password
+ * The moodledata are located in /var/www/moodledata
+ 
+After you create a Moodle 1-Click Droplet, you can continue with the Moodle installation on your browser, using your Droplet’s IP address. Just fire your browser at http://your_droplet_public_ipv4 and follow the instructions there.
+
+In order to use your Moodle for production, you must first configure a fully qualified domain name (FQDN) in your DNS to point to the IP of your Moodle 1-Click Droplet. This way, you will have a proper URL for your Moodle and you will also be able to enable https access (instead of the insecure http). 
+
+To automatically apply Let's Encrypt SSL and enable https access for your Moodle droplet, use the pre-installed certbot tool: certbot --apache
+
+Enter y and your email address to finish the process. Also, allow the tool to configure Apache automatically - enter y to force HTTPS rules to be applied! 
+To confirm that your site is set up properly under HTTPS, visit https://www.your-domain.org/ in your browser and look for the lock icon in the URL bar. 
+If you want to check that you have the top-of-the-line installation, you can head to https://www.ssllabs.com/ssltest/. 
+
+After confirming those details for production deployment, you can configure Moodle in your web browser with these simple steps:
+
+1. Install the Moodle LMS by visiting the following URL: http://FQDN
+2. Login afterwards via the admin panel on moodle by visiting the following URL: on https://FQDN/admin 
+3. Login with the root credentials into Moodle, using “admin” as a login name and the password that you put during the installation phase.
+4. Configure any other settings and you are ready to go!
+ 
+Also, on the server:
+ * The Moodle LMS web root is located at /var/www/moodle-1click
+ * The main configuration file is /var/www/moodle-1click/config.php (which also includes the Moodle Database configuration details)
+ * The Moodle user is the same as the apache web server user: "www-data"
+ * The moodle cronjob is running every one minute, and the related log files are under the folder: /var/log/moodle_cron (they are rotated every 30 days)
+
+********************************************************************************
+To delete this message of the day: rm -rf $(readlink -f ${0})
+EOF

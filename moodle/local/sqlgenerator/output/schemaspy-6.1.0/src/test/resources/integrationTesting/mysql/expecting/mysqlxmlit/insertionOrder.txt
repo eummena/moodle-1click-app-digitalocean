@@ -1,4 +1,0 @@
-groups
-resources
-users
-group_resources

@@ -1,0 +1,7 @@
+/var/log/moodle_cron/*.log {
+        daily
+        missingok
+        rotate 30 
+        compress
+        delaycompress
+}
