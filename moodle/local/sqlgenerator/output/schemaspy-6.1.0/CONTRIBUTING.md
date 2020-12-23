@@ -1,2 +1,0 @@
-SchemaSpy Contribution Guidelines
-

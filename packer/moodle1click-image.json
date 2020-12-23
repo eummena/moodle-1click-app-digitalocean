@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "token": "{{env `DIGITALOCEAN_TOKEN`}}",
+    "image_name": "marketplace-moodle-debian-snapshot-{{timestamp}}",
+    "apt_packages": "ufw mariadb-server mariadb-client php php-fpm php-curl php-pspell php-curl php-gd php-intl php-mysql php-xml php-xmlrpc php-soap php-mbstring php-zip apache2 certbot python-certbot-apache",
+    "application_name": "Moodle",
+    "application_version": "3.10"
+   },
+  "sensitive-variables": ["do_api_token"],
+  "builders": [
+    {
+      "type": "digitalocean",
+      "api_token": "{{user `token`}}",
+      "image": "debian-10-x64",
+      "region": "fra1",
+      "size": "s-1vcpu-1gb",
+      "ssh_username": "root",
+      "snapshot_name": "{{user `image_name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "cloud-init status --wait"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "mkdir -p /etc/apache2/sites-available /var/www/moodle-1click /var/lib/digitalocean/"
+      ]
+    },
+
+    {
+      "type": "file",
+      "source": "files/etc/",
+      "destination": "/etc/"
+    },
+    {
+      "type": "file",
+      "source": "files/var/",
+      "destination": "/var/"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "DEBIAN_FRONTEND=noninteractive",
+        "LC_ALL=C",
+        "LANG=en_US.UTF-8",
+        "LC_CTYPE=en_US.UTF-8"
+      ],
+      "inline": [
+        "apt -qqy update",
+        "apt -qqy -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' full-upgrade",
+        "apt -qqy -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install {{user `apt_packages`}}",
+        "apt-get -qqy clean"
+      ]
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "application_name={{user `application_name`}}",
+        "application_version={{user `application_version`}}",
+        "DEBIAN_FRONTEND=noninteractive",
+        "LC_ALL=C",
+        "LANG=en_US.UTF-8",
+        "LC_CTYPE=en_US.UTF-8"
+      ],
+      "scripts": [
+        "scripts/01-prepare-moodle-requirements.sh",
+        "scripts/02-application-tag.sh",
+        "scripts/90-cleanup.sh",
+        "scripts/99-img_check.sh"
+      ]
+    }
+  ]
+}

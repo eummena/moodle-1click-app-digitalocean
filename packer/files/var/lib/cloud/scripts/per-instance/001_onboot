@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Scripts in this directory will be executed by cloud-init on the first boot of droplets
+# created from your image.  Things like generating passwords, configuration requiring IP address
+# or other items that will be unique to each instance should be done in scripts here.
+myip=$(hostname -I | awk '{print$1}')
+WWW_HOME="/var/www/moodle-1click"
+
+# Generate Mysql root password
+root_mysql_pass=$(openssl rand -hex 24)
+
+# Save the root mysql password
+cat > /root/.root_mysql_password <<EOF
+root_mysql_pass="${root_mysql_pass}"
+EOF
+
+# Permissions fix
+chmod 600 /root/.root_mysql_password
+
+mysqladmin -u root -h localhost password ${root_mysql_pass}
+DB_NAME="moodle"
+DB_USER="root"
+DB_PASS="${root_mysql_pass}"
+
+# Create moodle database with root mysql user
+mysql -u root -e "CREATE DATABASE ${DB_NAME}"
+mysql -u root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@localhost IDENTIFIED BY '${DB_PASS}'"
+
+# Configure cronjob for moodle under "www-data" user
+mkdir /var/log/moodle_cron
+touch /var/log/moodle_cron/moodle_cron.log
+chown -R www-data:www-data /var/log/moodle_cron
+echo "* * * * * /usr/bin/php $WWW_HOME/admin/cli/cron.php >> /var/log/moodle_cron/moodle_cron.log 2>&1" >> /var/spool/cron/crontabs/www-data
+chmod 600 /var/spool/cron/crontabs/www-data
+systemctl restart cron

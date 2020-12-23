@@ -1,16 +1,18 @@
 variables:
-  IP: '165.227.160.132'
+   URL: 'https://moodle1click.eummena.org'
+   WWW_HOME: '/var/www/moodle-1click'
 
 deploy_to_server:
   stage: deploy
   tags:
-    - eummena-shell-runner 
+    - dev1-shared-runner 
   script:
-    - echo "Running deployment scripts for Droplet image"
-    - cd moodle-on-do-marketplace/fabric/template
-    - fab testbuild -H $IP
-  only:
-    - master
+    - echo "Running deployment scripts"
+    - cd packer/files/var/www/moodle-1click/
+    - sudo rsync --chown www-data:www-data -avz --delete --exclude ".git/" --filter=":- .gitignore" . $WWW_HOME
+    - echo "All done, you may now check $URL"
+  only: 
+    - dev
 
 stages:
   - deploy
