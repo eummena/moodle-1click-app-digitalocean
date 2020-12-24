@@ -2,6 +2,9 @@ This repository contains the source files (scripts, files) for building the Mood
 
 The software for preparing the droplet image is `packer`. See also [INSTALL.md](./INSTALL.md) for additional technical instructions on running packer & fab locally.
 
+
+:point_right: **[Lauch now your Moodle learnign platfomr on your droplet on Digital Ocean cloud](https://marketplace.digitalocean.com/apps/moodle?refcode=93d5584474d7)**
+
 ## Moodle by Eummena :: 1-Click App for DigitalOcean MarketPlace
 
 **[Moodle](https://moodle.org)** is the world's most popular learning management system. As the leading open source Learning Platform it is designed to provide learners, educators, and administrators with a single robust, secure and integrated solution to create personalised learning environments. This 1-Click app, maintained by **[Eummena](https://eummena.org)**, Premium Moodle Partner, will allow you to start creating your online learning site in minutes on DigitalOcean cloud!
